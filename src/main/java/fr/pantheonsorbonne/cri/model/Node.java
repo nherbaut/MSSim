@@ -115,7 +115,7 @@ public class Node {
 		if (!this.isGateway()) {
 			throw new RuntimeException("Not a gateway");
 		}
-		if (this.getType().equals("exclusiveGateway")) {
+		if (!this.getType().equals("parallelGateway")) {
 			if (!this.isDivergingGateway()) {
 				return GatewayType.EXCLUSIVE_CONVERGING;
 			} else {

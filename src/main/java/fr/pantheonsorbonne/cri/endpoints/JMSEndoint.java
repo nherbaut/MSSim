@@ -28,6 +28,8 @@ public abstract class JMSEndoint {
 				String id = txtMessage.getStringProperty("identifier");
 				StubMessageHandlerBuilder.of(message, message.getNodeFromId(id)).handleStubMessage();
 			} catch (Exception e) {
+				e.printStackTrace();
+
 				throw new RuntimeException(e);
 			}
 

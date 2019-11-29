@@ -23,20 +23,24 @@ import fr.pantheonsorbonne.cri.model.Payload;
 import fr.pantheonsorbonne.cri.model.StubMessage;
 import fr.pantheonsorbonne.cri.services.StubMessageHandlerBuilder;
 
-@Path("/")
+@Path("/rest")
 public class StubMessageResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StubMessageResource.class);
 
 	@Path("/{identity}")
 	@POST()
-	@Consumes(value = MediaType.APPLICATION_JSON)
+	@Consumes(value = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response welcome(StubMessage message, @PathParam("identity") String id) {
 		LOGGER.info("New Message to {}", id);
 		LOGGER.debug("received for {} with context {}", id, message.getContext());
 
 		ThreadResources.executor.submit(() -> {
-			StubMessageHandlerBuilder.of(message, message.getNodeFromId(id)).handleStubMessage();
+			try {
+				StubMessageHandlerBuilder.of(message, message.getNodeFromId(id)).handleStubMessage();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		});
 
 		return Response.ok().build();

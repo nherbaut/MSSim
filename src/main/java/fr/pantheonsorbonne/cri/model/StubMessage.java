@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -126,10 +128,12 @@ public class StubMessage {
 
 	}
 
+	@XmlTransient
+	static Random random = new Random(0);
 	public Node randNext(Node node) {
 
 		Collection<Node> nexts = this.next(node);
-		return nexts.stream().skip((int) (nexts.size() * Math.random())).findFirst().orElseThrow();
+		return nexts.stream().skip((int) (random.nextInt(nexts.size()))).findFirst().orElseThrow();
 
 	}
 

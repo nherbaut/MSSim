@@ -45,7 +45,7 @@ public abstract class StubMessageHandlerBuilder {
 			}
 			break;
 		case SOURCE:
-			res = new MessageTagger(StubMessageHandlerBuilder.of(message, message.firstNext(n)));
+			res = new MessageTagger(StubMessageHandlerBuilder.of(message, message.randNext(n)));
 			break;
 		case SINK:
 			res = new ProcessingStubMessageHandler(message, n.getId());
