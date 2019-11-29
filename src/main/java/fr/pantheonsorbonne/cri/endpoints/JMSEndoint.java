@@ -3,9 +3,6 @@ package fr.pantheonsorbonne.cri.endpoints;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.jms.JMSException;
@@ -14,24 +11,15 @@ import javax.jms.MessageConsumer;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBException;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
 import fr.pantheonsorbonne.cri.model.StubMessage;
 import fr.pantheonsorbonne.cri.services.JMSUtils;
 import fr.pantheonsorbonne.cri.services.StubMessageHandlerBuilder;
 
 public abstract class JMSEndoint {
 
-	private JMSEndoint() {
-
-	}
-
-	static ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("MSProducerThread-%d").build();
-	static ExecutorService executor = Executors.newFixedThreadPool(1000, namedThreadFactory);
-
 	public static void onMessageReceived(Message incomingMessage) {
 
-		executor.submit(() -> {
+		ThreadResources.executor.submit(() -> {
 
 			try {
 				TextMessage txtMessage = (TextMessage) incomingMessage;

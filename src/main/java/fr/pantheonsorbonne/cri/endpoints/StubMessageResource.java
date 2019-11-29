@@ -3,23 +3,17 @@ package fr.pantheonsorbonne.cri.endpoints;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Streams;
 
 import fr.pantheonsorbonne.cri.model.ContextAutomaton;
 import fr.pantheonsorbonne.cri.model.ExecutionTrace;
@@ -27,7 +21,6 @@ import fr.pantheonsorbonne.cri.model.Link;
 import fr.pantheonsorbonne.cri.model.Node;
 import fr.pantheonsorbonne.cri.model.Payload;
 import fr.pantheonsorbonne.cri.model.StubMessage;
-import fr.pantheonsorbonne.cri.services.StubMessageHandlerImpl;
 import fr.pantheonsorbonne.cri.services.StubMessageHandlerBuilder;
 
 @Path("/")
@@ -39,9 +32,13 @@ public class StubMessageResource {
 	@POST()
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	public Response welcome(StubMessage message, @PathParam("identity") String id) {
-		LOGGER.info("New Message to {}" , id);
+		LOGGER.info("New Message to {}", id);
 		LOGGER.debug("received for {} with context {}", id, message.getContext());
-		StubMessageHandlerBuilder.of(message, message.getNodeFromId(id)).handleStubMessage();
+
+		ThreadResources.executor.submit(() -> {
+			StubMessageHandlerBuilder.of(message, message.getNodeFromId(id)).handleStubMessage();
+		});
+
 		return Response.ok().build();
 
 	}
